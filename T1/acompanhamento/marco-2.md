@@ -9,7 +9,7 @@ Este documento apresenta as representações visuais (gráficas e matemáticas) 
 Como o grafo possui identificadores não sequenciais ($V = \{1, 2, 5, 7, 8, 9, 10\}$), as estruturas foram mapeadas logicamente.
 
 ### A. Matriz de Adjacência (Representação Matemática)
-A matriz de adjacência $A$ de dimensões $7 \times 7$ representa o grafo não direcionado. A simetria em relação à diagonal principal reflete a bidirecionalidade das arestas. O valor `1` indica a existência de aresta, e `0` a ausência.
+A matriz de adjacência $A$ de dimensões $7 \times 7$ representa o grafo não direcionado. A simetria em relação à diagonal principal reflete a bidirecionalidade das arestas. O valor `1` indica a existência de uma aresta entre dois vértices.
 
 $$
 A = 
@@ -26,7 +26,7 @@ A =
 $$
 
 ### B. Lista de Adjacência (Representação Gráfica em Memória)
-Abaixo, a representação gráfica de como a Lista de Adjacência é estruturada na memória (um vetor/tabela de dispersão apontando para listas encadeadas de vizinhos). O símbolo `∅` indica o fim da lista encadeada para aquele vértice.
+Abaixo, a representação gráfica de como a Lista de Adjacência é estruturada na memória (um vetor/tabela de dispersão apontando para listas encadeadas de vizinhos). O símbolo `∅` indica o fim da lista.
 
 ```text
 [ Vértice ]      [ Listas Encadeadas de Vizinhos ]
@@ -67,6 +67,15 @@ $$
 $$
 
 **Interpretação:** Em média, cada vértice do grafo está conectado a exatos 2 outros vértices.
+
+### Grau Mínimo, Grau Máximo, Ordem e Tamanho
+
+- **Grau mínimo:** 1
+- **Grau máximo:** 4
+- **Ordem do grafo:** 7
+- **Tamanho do grafo:** 7
+
+**Interpretação:** O grafo possui grau mínimo 1 e grau máximo 4, indicando que há vértices com apenas uma conexão e um vértice mais conectado. Além disso, sua ordem é 7, ou seja, possui 7 vértices, e seu tamanho é 7, correspondendo ao número de arestas do grafo.
 
 ### Densidade de Arestas
 A densidade ($D$) compara o número de arestas existentes com o máximo de arestas possíveis em um grafo simples ($E_{max}$).

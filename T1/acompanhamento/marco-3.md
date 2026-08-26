@@ -1,6 +1,6 @@
 # Execução e Análise de Busca no Grafo
 
-Considerando as métricas solicitadas (tempos de descoberta e término, estados de visita, predecessores), o algoritmo que perfeitamente modela esses requisitos na teoria dos grafos é a **Busca em Profundidade (DFS - Depth-First Search)**. 
+Considerando as métricas solicitadas (tempos de descoberta e término, estados de visita, predecessores), o algoritmo que perfeitamente modela esses requisitos na teoria dos grafos é a **Busca em Profundidade (DFS - Depth-First Search)**.
 
 Este documento apresenta a execução analítica da DFS sobre o nosso grafo esparso, assumindo a ordem crescente dos identificadores para desempate na escolha dos vizinhos.
 
@@ -25,7 +25,7 @@ Iniciamos a busca a partir do vértice de menor ID, o **vértice 1**, inicializa
 6.  **t=6:** Finaliza `7` (Cinza $\rightarrow$ Preto). $f[7] = 6$. Retorna para `5`.
 7.  **t=7:** De volta ao `5`, próximo vizinho branco é `8`. Visita `8` (Branco $\rightarrow$ Cinza). $d[8] = 7$.
 8.  **t=8:** Em `8`, vizinhos: `5` (Cinza), `10`. Avança para `10`.
-9.  **t=9:** Visita `10` (Branco $\rightarrow$ Cinza). $d[10] = 8$. Vizinhos: `5` (Cinza), `8` (Cinza). Como ambos já foram descobertos, fim dos vizinhos. Aresta (10,5) é detectada como aresta de retorno (*back edge*).
+9.  **t=9:** Visita `10` (Branco $\rightarrow$ Cinza). $d[10] = 8$. Vizinhos: `5` (Cinza), `8` (Cinza). Como ambos já foram descobertos, fim dos vizinhos. Aresta (10,5) é detectada como aresta de retorno.
 10. **t=10:** Finaliza `10` (Cinza $\rightarrow$ Preto). $f[10] = 9$. Retorna para `8`.
 11. **t=11:** De volta ao `8`. Fim dos vizinhos. Finaliza `8`. $f[8] = 10$. Retorna para `5`.
 12. **t=12:** De volta ao `5`. O vizinho `10` já é Preto. Fim dos vizinhos. Finaliza `5`. $f[5] = 11$. Retorna para `2`.
@@ -56,14 +56,14 @@ A tabela abaixo sumariza o estado final da execução, onde $\pi$ representa o n
 ## 4. Árvore de Busca e Alcançabilidade
 
 ### Alcançabilidade
-A partir do vértice inicial (1), foi possível transitar para o estado **Preto** em todos os $V$ vértices do grafo. Isso comprova que **o grafo é um Componente Conexo único**, ou seja, qualquer nó é alcançável a partir de qualquer outro.
+A partir do vértice inicial (1), foi possível transitar para o estado **Preto** em todos os $V$ vértices do grafo. Isso comprova que **o grafo é um Componente Conexo único**, ou seja, qualquer nó é alcançável a partir de qualquer outro nó através de uma sequência de arestas.
 
 ### Árvore de Busca em Profundidade (Spanning Tree)
 As arestas percorridas para descobrir novos vértices brancos formam a árvore de busca. No nosso grafo, as arestas da árvore são definidas pelos predecessores:
 *   **Arestas da Árvore (Tree Edges):** $\{(1,9), (9,2), (2,5), (5,7), (5,8), (8,10)\}$
 
 Qualquer aresta que não pertença a esta árvore e ligue um vértice a um ancestral na árvore é uma **Aresta de Retorno (Back Edge)**. 
-*   **Arestas de Retorno:** Aresta $(10,5)$, descoberta no passo 9, pois quando estávamos em 10, o vértice 5 ainda estava na pilha de execução (Cinza). A presença dessa aresta comprova matematicamente a existência de um **ciclo** no grafo (o ciclo $5-8-10-5$).
+*   **Arestas de Retorno:** Aresta $(10,5)$, descoberta no passo 9, pois quando estávamos em 10, o vértice 5 ainda estava na pilha de execução (Cinza). A presença dessa aresta comprova matematicamente a existência de ciclos no grafo.
 
 ---
 
@@ -71,10 +71,42 @@ Qualquer aresta que não pertença a esta árvore e ligue um vértice a um ances
 
 ### Aplicabilidade
 Como estudante de engenharia, compreender a DFS com esses atributos (tempos, cores, predecessores) permite resolver problemas complexos como:
-1.  **Detecção de Ciclos:** Como evidenciado pela aresta de retorno (10,5). Fundamental em detecção de impasses (deadlocks) em sistemas operacionais ou verificação de circuitos lógicos sem loops fechados.
+1.  **Detecção de Ciclos:** Como evidenciado pela aresta de retorno (10,5). Fundamental em detecção de impasses (deadlocks) em sistemas operacionais ou verificação de circuitos lógicos sem loops.
 2.  **Identificação de Componentes Conexos:** Se o grafo fosse desconexo, a execução manual reiniciaria em um nó branco, permitindo classificar sub-redes isoladas.
-3.  **Ordenação Topológica:** Embora restrita a grafos direcionados (DAGs), ordenar os nós pelo tempo de término decrescente ($f[v]$) resolve cadeias de dependências em compilação de software (ex: `make`) ou grade de disciplinas da faculdade.
+3.  **Ordenação Topológica:** Embora restrita a grafos direcionados (DAGs), ordenar os nós pelo tempo de término decrescente ($f[v]$) resolve cadeias de dependências em compilação de software.
 
-### Adaptação Parcial quando Pertinente
-*   **Busca por Alvo Específico (Early Exit):** Se o objetivo do problema for encontrar um vértice específico (ex: verificar se o nó 10 existe na rede), podemos adaptar o algoritmo para abortar a execução no passo 9 ($d[10]=8$), retornando imediatamente o caminho construído via array de predecessores $\pi$, economizando processamento.
-*   **Limite de Profundidade (Iterative Deepening DFS):** Em contextos de árvores/grafos muito profundos (como modelagem de estados ou I.A. básica), o rastreio de descoberta pode ser podado a uma profundidade máxima ($L$), evitando *stack overflow* da memória em vértices muito distantes da raiz.
+### Adaptação: Encontrar o Vértice de Maior Valor Alcançável
+**Objetivo:** Identificar qual é o vértice com o maior identificador (ou valor) alcançável a partir do vértice inicial.
+
+**Estratégia de Adaptação:**
+Durante a execução da DFS, mantemos uma variável `maior_vertice` que é continuamente atualizada a cada vértice descoberto. Sempre que um vértice branco é visitado (transição Branco $\rightarrow$ Cinza), comparamos seu identificador com o valor armazenado em `maior_vertice` e atualizamos caso seja maior.
+
+**Pseudocódigo Adaptado:**
+```
+maior_vertice = -∞
+
+DFS(v):
+    cor[v] ← Cinza
+    maior_vertice ← max(maior_vertice, v)  // Comparação e atualização
+    
+    for cada vizinho u de v:
+        if cor[u] = Branco:
+            π[u] ← v
+            DFS(u)
+    
+    cor[v] ← Preto
+```
+
+**Execução na Prática:**
+- Passo 1: Visita vértice `1` → `maior_vertice = 1`
+- Passo 2: Visita vértice `9` → `maior_vertice = 9` (9 > 1)
+- Passo 3: Visita vértice `2` → `maior_vertice = 9` (2 < 9, sem atualização)
+- Passo 4: Visita vértice `5` → `maior_vertice = 9` (5 < 9, sem atualização)
+- Passo 5: Visita vértice `7` → `maior_vertice = 9` (7 < 9, sem atualização)
+- Passo 7: Visita vértice `8` → `maior_vertice = 9` (8 < 9, sem atualização)
+- Passo 9: Visita vértice `10` → `maior_vertice = 10` (10 > 9, atualiza!)
+
+**Resultado Final:**
+Após explorar completamente todos os vértices alcançáveis a partir de `1`, o vértice de **maior valor alcançável é `10`**.
+
+Essa adaptação mantém a complexidade de tempo em $O(V + E)$ e é trivial de implementar em qualquer linguagem de programação, bastando adicionar uma comparação simples durante cada visita a um novo vértice.

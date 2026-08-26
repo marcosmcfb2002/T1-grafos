@@ -1,8 +1,3 @@
-# Execução e Análise de Busca no Grafo
-
-Considerando as métricas solicitadas (tempos de descoberta e término, estados de visita, predecessores), o algoritmo que perfeitamente modela esses requisitos na teoria dos grafos é a **Busca em Profundidade (DFS - Depth-First Search)**.
-
-Este documento apresenta a execução analítica da DFS sobre o nosso grafo esparso, assumindo a ordem crescente dos identificadores para desempate na escolha dos vizinhos.
 
 ## 1. Estados de Visita (Coloração de Vértices)
 A DFS utiliza três estados para rastrear o progresso e evitar ciclos infinitos:
@@ -70,7 +65,7 @@ Qualquer aresta que não pertença a esta árvore e ligue um vértice a um ances
 ## 5. Aplicabilidade ao Problema e Adaptações
 
 ### Aplicabilidade
-Compreender a DFS com esses atributos (tempos, cores, predecessores) permite resolver problemas complexos como:
+Como estudante de engenharia, compreender a DFS com esses atributos (tempos, cores, predecessores) permite resolver problemas complexos como:
 1.  **Detecção de Ciclos:** Como evidenciado pela aresta de retorno (10,5). Fundamental em detecção de impasses (deadlocks) em sistemas operacionais ou verificação de circuitos lógicos sem loops fechados.
 2.  **Identificação de Componentes Conexos:** Se o grafo fosse desconexo, a execução manual reiniciaria em um nó branco, permitindo classificar sub-redes isoladas.
 3.  **Ordenação Topológica:** Embora restrita a grafos direcionados (DAGs), ordenar os nós pelo tempo de término decrescente ($f[v]$) resolve cadeias de dependências em compilação de software (ex: `make`) ou grade de disciplinas da faculdade.
